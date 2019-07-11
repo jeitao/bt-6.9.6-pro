@@ -1,0 +1,178 @@
+#!/bin/bash
+#希望你能尊重开发者的作品如果您转载请【保留本版权信息】
+#Loli分享论坛:www.moecat.cn
+#雾子の博客:www.kiriko.org
+#Bt_Panel 官网:www.btpanel.net
+#————————————————————————————————————————
+# Copyright © 2018-2019 雾子脚本版权所有
+#————————————————————————————————————————
+Green_font="\033[32m" && Yellow_font="\033[33m" && Red_font="\033[31m" && Font_suffix="\033[0m"
+Info="${Green_font}[Info]${Font_suffix}"
+Error="${Red_font}[Error]${Font_suffix}"
+Thank="${Green_font}感谢使用书记的脚本!!${Font_suffix}"
+Byebye="${Red_font}感谢使用书记的脚本!!!\n更多内容请关注 → Bt_Panel 官网：www.btpanel.net ！${Font_suffix}"
+pluginPath=/www/server/panel/plugin/btwaf
+pluginPath1=/www/server/panel/plugin/tamper_proof
+download_Url=https://raw.githubusercontent.com/cq520/bt-6.9.6-pro/master
+MAIN_RETURN=${Red_font}[宝塔面板Bt_Panel开心脚本]${Font_suffix}
+MAIN_RETURNC="${Red_font}提示：修复了被拉黑无法安装插件问题！${Font_suffix}"
+MAIN_RETURNE="${Red_font}提示：防火墙、防篡改插件，请先在面板安装，在使用脚本 修复验证问题！${Font_suffix}"
+MAIN_RETURND="${Yellow_font}公告：本次 开心面板版本 6.9.6 ！${Font_suffix}"
+
+sorry_run="${Green_font}抱歉！耐心等待上线！${Font_suffix}"
+version="${Red_font}[6.9.24]${Font_suffix}"
+
+# 宝塔 6.9.6 Centos判断是否安装宝塔
+centos_y(){
+clear
+read -p "已经安装宝塔 请选择1 ，未安装宝塔 请选择2 ，返回主目录 请选择3:" c_p
+while [[ ! "${c_p}" =~ ^[1-3]$ ]]
+	do
+		echo -e "${Error} 无效输入"
+		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" c_p
+	done
+if [[ "${c_p}" == "1" ]]; then
+	curl ${download_Url}/install/update6.sh|bash
+elif [[ "${c_p}" == "2" ]]; then
+    wget -O install.sh ${download_Url}/install/install_6.0.sh && sh install.sh
+elif [[ "${c_p}" == "3" ]]; then
+    main
+else
+	clear
+	exit 1
+fi	
+
+}
+
+ # 宝塔 6.9.6 Debian判断是否安装宝塔
+debian_y(){
+clear
+read -p "已经安装宝塔 请选择1 ，未安装宝塔 请选择2 ，返回主目录 请选择3:" d_p
+while [[ ! "${d_p}" =~ ^[1-3]$ ]]
+	do
+		echo -e "${Error} 无效输入"
+		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" d_p
+	done
+if [[ "${d_p}" == "1" ]]; then
+	curl ${download_Url}/install/update6.sh|bash
+elif [[ "${d_p}" == "2" ]]; then
+    wget -O install.sh ${download_Url}/install/install-ubuntu_6.0.sh && bash install.sh
+elif [[ "${d_p}" == "3" ]]; then
+    main
+else
+	clear
+	exit 1
+fi	
+
+}
+
+ # 宝塔 6.9.6 Ubuntu判断是否安装宝塔
+ubuntu_y(){
+clear
+read -p "已经安装宝塔 请选择1 ，未安装宝塔 请选择2 ，返回主目录 请选择3:" u_p
+while [[ ! "${u_p}" =~ ^[1-3]$ ]]
+	do
+		echo -e "${Error} 无效输入"
+		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" u_p
+	done
+if [[ "${u_p}" == "1" ]]; then
+	curl ${download_Url}/install/update6.sh|bash
+elif [[ "${u_p}" == "2" ]]; then
+    wget -O install.sh ${download_Url}/install/install-ubuntu_6.0.sh && sudo bash install.sh
+elif [[ "${u_p}" == "3" ]]; then
+    main
+else
+	clear
+	exit 1
+fi	
+
+}
+
+# 临时解决
+fail(){
+clear
+read -p "确认是否已经在面板上安装好 防火墙、防篡改插件！【回车】"
+read -p "1.防火墙\n2.防篡改\n3.返回" faill
+while [[ ! "${faill}" =~ ^[1-3]$ ]]
+	do
+		echo -e "${Error} 无效输入"
+		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" faill
+	done
+if [[ "${faill}" == "1" ]]; then
+	rm -rf /www/server/panel/plugin/btwaf/btwaf_main.so
+	cd /www/server/panel/plugin/btwaf
+    wget -N --no-check-certificate ${download_Url}/build/btwaf.zip
+	unzip -o btwaf.zip > /dev/null
+	rm -rf btwaf.zip
+	cd /
+    /etc/init.d/bt restart	
+	fail
+elif [[ "${faill}" == "2" ]]; then
+	rm -rf /www/server/panel/plugin/tamper_proof/tamper_proof_main.so
+	cd /www/server/panel/plugin/tamper_proof
+    wget -N --no-check-certificate ${download_Url}/build/tamper_proof.zip
+	unzip -o tamper_proof.zip > /dev/null
+	rm -rf tamper_proof.zip
+	cd /
+    /etc/init.d/bt restart	
+	fail 
+elif [[ "${faill}" == "3" ]]; then
+	main   
+else
+	clear
+	exit 1
+fi	
+
+}
+
+# 退出脚本
+delete(){
+    clear
+    echo -e "${Byebye}"
+    rm -rf /Bt_Panel
+    rm -rf Bt_Panel
+    rm -rf /install.sh
+    rm -rf install.sh
+}
+
+main(){
+clear
+echo -e "${Thank}"
+echo -e "${Green_font}
+#=======================================
+# Name:            Bt-Panel
+# Version:         6.0　　　　　　　　　　　　　　　　
+# Author:          Bt_Panel 官网
+# Copyright I:     www.betpanel.net
+# QQ交流群：       687305290
+# TG交流群：       t.me/freechevereto
+#=======================================
+${Font_suffix}"
+echo -e "${MAIN_RETURN}"
+echo -e "${MAIN_RETURND}\n${MAIN_RETURNC}\n${MAIN_RETURNE}\n1.宝塔 Centos 7x\n2.宝塔 Debian\n3.宝塔 Ubuntu\n4.宝塔 测试版 ${version}\n5.宝塔 修复-防火墙/防篡改\n6.退出脚本"
+read -p "请输入需要输入的选项:" function
+
+# while [[ ! "${function}" =~ ^[1-5]$ ]]
+	# do
+		# echo -e "${Error} 无效输入"
+		# echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" function
+	# done
+
+if [[ "${function}" == "1" ]]; then
+	centos_y
+elif [[ "${function}" == "2" ]]; then
+    debian_y
+elif [[ "${function}" == "3" ]]; then
+    ubuntu_y
+elif [[ "${function}" == "4" ]]; then
+    echo -e "${sorry_run}"
+elif [[ "${function}" == "5" ]]; then
+    fail
+elif [[ "${function}" == "6" ]]; then
+    delete    
+else
+	clear
+	exit 1
+fi	
+}
+main
